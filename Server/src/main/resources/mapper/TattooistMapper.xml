@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.TattooistMapper">
+    <resultMap id="tattooistResultMap" type="com.example.demo.dto.TattooistDto">
+        <id property="userId" column="id" />
+        <result property="nickName" column="nick_name" />
+        <result property="bigAddress" column="big_address" />
+        <result property="smallAddress" column="small_address" />
+    </resultMap>
+
+    <insert id="insertTattooist" parameterType="com.example.demo.dto.TattooistDto">
+        INSERT INTO tattooist VALUES (#{userId}, #{nickName}, #{bigAddress}, #{smallAddress}, #{mobile}, #{description})
+    </insert>
+
+    <select id="selectOneTattooist" parameterType="string" resultMap="tattooistResultMap" resultType="com.example.demo.dto.TattooistDto">
+        SELECT * FROM tattooist WHERE id = #{userId}
+    </select>
+
+</mapper>

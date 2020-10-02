@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.TattooImageMapper">
+    <resultMap id="tattooImageResultMap" type="com.example.demo.dto.TattooImageDto">
+        <id property="id" column="id" />
+        <result property="postId" column="post_id" />
+        <result property="url" column="url" />
+        <result property="fileName" column="filename"/>
+    </resultMap>
+
+    <select id="selectTattooDesign" resultMap="tattooImageResultMap" resultType="string">
+
+    </select>
+
+    <select id="searchPostIdList" resultMap="tattooImageResultMap" resultType="com.example.demo.dto.TattooImageDto">
+        SELECT distinct (post_id)
+        FROM tattoo_image
+        WHERE filename IN
+        <foreach collection="fileNameList" item="list" open="(" close=")" separator=",">
+            #{list}
+        </foreach>
+    </select>
+
+    <insert id="insertTattooImage" parameterType="com.example.demo.dto.TattooImageDto">
+        INSERT INTO
+            tattoo_image (post_id, url, filename)
+            VALUES
+            (#{postId}, #{url}, #{fileName})
+    </insert>
+
+</mapper>
