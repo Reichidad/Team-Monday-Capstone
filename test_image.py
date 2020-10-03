@@ -19,9 +19,14 @@ def crop_all_dataset():
     ori_train_dst = 'crop/TrainVal_images/train_images'
     seg_val_dst = 'crop/TrainVal_parsing_annotations/val_segmentations'
     ori_val_dst = 'crop/TrainVal_images/val_images'
+    seg_test_dst = 'crop/Test_parsing_annotations/test_segmentations'
+    ori_test_dst = 'crop/Test_images/test_images'
 
     train_images = os.listdir(seg_train_src)
-    val_images = os.listdir(seg_val_src)
+    val_images_all = os.listdir(seg_val_src)
+    half = int(len(val_images_all)/2)
+    val_images = val_images_all[:half]
+    test_images = val_images_all[half:]
 
     for train_image in train_images:
         current_seg_image = cv2.imread(seg_train_src + '/' + train_image, 1)
@@ -74,6 +79,32 @@ def crop_all_dataset():
             crop_right_ori_image = current_ori_image.copy()[r_top:r_bottom, r_left:r_right]
             cv2.imwrite(seg_val_dst + '/right_' + val_image, crop_right_seg_image)
             cv2.imwrite(ori_val_dst + '/right_' + val_image, crop_right_ori_image)
+
+    for test_image in test_images:
+        current_seg_image = cv2.imread(seg_val_src + '/' + test_image, cv2.IMREAD_COLOR)
+        current_ori_image = cv2.imread(ori_val_src + '/' + test_image.replace(".png", ".jpg"), cv2.IMREAD_COLOR)
+
+        if LEFT_ARM in np.unique(current_seg_image[np.nonzero(current_seg_image)]):
+            l_top = get_top(current_seg_image, LEFT_ARM);
+            l_bottom = get_bottom(current_seg_image, LEFT_ARM);
+            l_left = get_left(current_seg_image, LEFT_ARM);
+            l_right = get_right(current_seg_image, LEFT_ARM);
+
+            crop_left_seg_image = current_seg_image.copy()[l_top:l_bottom, l_left:l_right]
+            crop_left_ori_image = current_ori_image.copy()[l_top:l_bottom, l_left:l_right]
+            cv2.imwrite(seg_test_dst + '/left_' + test_image, crop_left_seg_image)
+            cv2.imwrite(ori_test_dst + '/left_' + test_image, crop_left_ori_image)
+
+        if RIGHT_ARM in np.unique(current_seg_image[np.nonzero(current_seg_image)]):
+            r_top = get_top(current_seg_image, RIGHT_ARM);
+            r_bottom = get_bottom(current_seg_image, RIGHT_ARM);
+            r_left = get_left(current_seg_image, RIGHT_ARM);
+            r_right = get_right(current_seg_image, RIGHT_ARM);
+
+            crop_right_seg_image = current_seg_image.copy()[r_top:r_bottom, r_left:r_right]
+            crop_right_ori_image = current_ori_image.copy()[r_top:r_bottom, r_left:r_right]
+            cv2.imwrite(seg_test_dst + '/right_' + test_image, crop_right_seg_image)
+            cv2.imwrite(ori_test_dst + '/right_' + test_image, crop_right_ori_image)
 
     end = time.time()
     print("<< crop_all_dataset Done | Elapsed time : ", end - start, " >>")
