@@ -40,7 +40,8 @@ def crop_all_dataset():
 
             crop_left_seg_image = current_seg_image.copy()[l_top:l_bottom, l_left:l_right]
             crop_left_ori_image = current_ori_image.copy()[l_top:l_bottom, l_left:l_right]
-            cv2.imwrite(seg_train_dst + '/left_' + train_image, crop_left_seg_image)
+            left_seg_write = np.where(crop_left_seg_image != LEFT_ARM, 0, 100)
+            cv2.imwrite(seg_train_dst + '/left_' + train_image, left_seg_write)
             cv2.imwrite(ori_train_dst + '/left_' + train_image, crop_left_ori_image)
 
         if RIGHT_ARM in np.unique(current_seg_image[np.nonzero(current_seg_image)]):
@@ -51,7 +52,8 @@ def crop_all_dataset():
 
             crop_right_seg_image = current_seg_image.copy()[r_top:r_bottom, r_left:r_right]
             crop_right_ori_image = current_ori_image.copy()[r_top:r_bottom, r_left:r_right]
-            cv2.imwrite(seg_train_dst + '/right_' + train_image, crop_right_seg_image)
+            right_seg_write = np.where(crop_right_seg_image != RIGHT_ARM, 0, 100)
+            cv2.imwrite(seg_train_dst + '/right_' + train_image, right_seg_write)
             cv2.imwrite(ori_train_dst + '/right_' + train_image, crop_right_ori_image)
 
     for val_image in val_images:
@@ -66,7 +68,8 @@ def crop_all_dataset():
 
             crop_left_seg_image = current_seg_image.copy()[l_top:l_bottom, l_left:l_right]
             crop_left_ori_image = current_ori_image.copy()[l_top:l_bottom, l_left:l_right]
-            cv2.imwrite(seg_val_dst + '/left_' + val_image, crop_left_seg_image)
+            left_seg_write = np.where(crop_left_seg_image != LEFT_ARM, 0, 100)
+            cv2.imwrite(seg_val_dst + '/left_' + val_image, left_seg_write)
             cv2.imwrite(ori_val_dst + '/left_' + val_image, crop_left_ori_image)
 
         if RIGHT_ARM in np.unique(current_seg_image[np.nonzero(current_seg_image)]):
@@ -77,7 +80,8 @@ def crop_all_dataset():
 
             crop_right_seg_image = current_seg_image.copy()[r_top:r_bottom, r_left:r_right]
             crop_right_ori_image = current_ori_image.copy()[r_top:r_bottom, r_left:r_right]
-            cv2.imwrite(seg_val_dst + '/right_' + val_image, crop_right_seg_image)
+            right_seg_write = np.where(crop_right_seg_image != RIGHT_ARM, 0, 100)
+            cv2.imwrite(seg_val_dst + '/right_' + val_image, right_seg_write)
             cv2.imwrite(ori_val_dst + '/right_' + val_image, crop_right_ori_image)
 
     for test_image in test_images:
@@ -92,7 +96,8 @@ def crop_all_dataset():
 
             crop_left_seg_image = current_seg_image.copy()[l_top:l_bottom, l_left:l_right]
             crop_left_ori_image = current_ori_image.copy()[l_top:l_bottom, l_left:l_right]
-            cv2.imwrite(seg_test_dst + '/left_' + test_image, crop_left_seg_image)
+            left_seg_write = np.where(crop_left_seg_image != LEFT_ARM, 0, 100)
+            cv2.imwrite(seg_test_dst + '/left_' + test_image, left_seg_write)
             cv2.imwrite(ori_test_dst + '/left_' + test_image, crop_left_ori_image)
 
         if RIGHT_ARM in np.unique(current_seg_image[np.nonzero(current_seg_image)]):
@@ -103,7 +108,8 @@ def crop_all_dataset():
 
             crop_right_seg_image = current_seg_image.copy()[r_top:r_bottom, r_left:r_right]
             crop_right_ori_image = current_ori_image.copy()[r_top:r_bottom, r_left:r_right]
-            cv2.imwrite(seg_test_dst + '/right_' + test_image, crop_right_seg_image)
+            right_seg_write = np.where(crop_right_seg_image != RIGHT_ARM, 0, 100)
+            cv2.imwrite(seg_test_dst + '/right_' + test_image, right_seg_write)
             cv2.imwrite(ori_test_dst + '/right_' + test_image, crop_right_ori_image)
 
     end = time.time()
