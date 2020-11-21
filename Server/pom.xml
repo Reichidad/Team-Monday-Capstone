@@ -11,6 +11,7 @@
     <groupId>com.example</groupId>
     <artifactId>demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
 <!--    <packaging>war</packaging>-->
     <packaging>jar</packaging>
     <name>demo</name>
@@ -26,6 +27,30 @@
 <!--            <artifactId>spring-boot-starter-tomcat</artifactId>-->
 <!--            <scope>provided</scope>-->
 <!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.tensorflow/tensorflow -->
+
+        <!-- 딥러닝 모델 Keras Import -->
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-core</artifactId>
+            <version>1.0.0-beta4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-modelimport</artifactId>
+            <version>1.0.0-beta4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native-platform</artifactId>
+            <version>1.0.0-beta4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tensorflow</groupId>
+            <artifactId>tensorflow</artifactId>
+            <version>1.15.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

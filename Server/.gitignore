@@ -34,3 +34,5 @@ application.properties
 **/src/main/resources/application.properties
 **/src/main/resources/capstone-274707-8dc2e791e977.json
 **/src/main/resources/sql/DataCreater.java
+!/src/main/resources/sql/DataCreater.java
+/src/main/crawling/flask.py
