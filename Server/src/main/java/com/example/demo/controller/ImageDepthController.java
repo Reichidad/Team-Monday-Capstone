@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.datatype.PostDetail;
 import lombok.AllArgsConstructor;
+import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
+import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +12,13 @@ import org.tensorflow.Session;
 import org.tensorflow.Tensor;
 import org.tensorflow.TensorFlow;
 import org.tensorflow.SavedModelBundle;
+
+//Keras Import
+import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.io.ClassPathResource;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -79,6 +88,37 @@ public class ImageDepthController {
     @GetMapping("/imageDepth2")
     public String imageDepth(@RequestParam(value = "image") MultipartFile image){
         return "Capstone Image Get Success";
+    }
+
+    @GetMapping("/imageDepth3")
+    public String imageDepth(){
+        // load the model
+        String simpleMlp = "D:/Capstone/model/games.h5";
+        System.out.println(simpleMlp);
+
+        MultiLayerNetwork model = null;
+        try {
+           model = KerasModelImport.importKerasSequentialModelAndWeights(simpleMlp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidKerasConfigurationException e) {
+            e.printStackTrace();
+        } catch (UnsupportedKerasConfigurationException e) {
+            e.printStackTrace();
+        }
+
+        // make a random sample
+        int inputs = 10;
+        INDArray features = Nd4j.zeros(inputs);
+        for (int i=0; i<inputs; i++)
+            features.putScalar(new int[] {i}, Math.random() < 0.5 ? 0 : 1);
+
+        // get the prediction
+        if(model != null) {
+            double prediction = model.output(features).getDouble(0);
+            System.out.println("Prediction : " + Double.toString(prediction));
+        }
+        return "Keras Model Import";
     }
 
     /**
