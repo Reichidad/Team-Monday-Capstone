@@ -2,7 +2,7 @@
 
 - Spring API server for Tattoo app
 
-### Nginx Setting (for LoadBalancing)
+### Nginx Setting (for Load Balancing)
 1.nginx.conf setting
 ```shell script
 http{
@@ -14,13 +14,13 @@ http{
   tcp_nopush on;
   
   include /etc/nginx/conf.d/*.conf;
-  include /etc/nginx/sites-enabled/*;
+  include /etc/nginx/sites-enabled/ln.conf;
 }
 ```
 
 2.Create a new nginx.conf file in 'sites-available directory'.
 ```shell script
-# file Name : lb.cf
+# file Name : lb.conf
 upstream myserver{
   # <loadbalance type : default = round-robin>
   server 192.168.0.1:4000;
@@ -34,5 +34,10 @@ server {
     proxy_pass http://myserver;
   }
 }
+```
+
+3.Link .conf file.
+```
+sudo ln -s /etc/nginx/sites-available/lb.conf /etc/nginx/sites-enabled/
 ```
 

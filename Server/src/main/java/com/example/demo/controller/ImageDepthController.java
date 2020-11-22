@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.datatype.PostDetail;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
 import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,13 +24,33 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.io.ClassPathResource;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @AllArgsConstructor
 @RestController
 public class ImageDepthController {
+    File tempH5File = null;
+    MultiLayerNetwork model = null;
     static int ROW = 0;
     static int FEATURE = 0;
+
+    public ImageDepthController() {
+        //h5 임시 파일 생성
+        try {
+            InputStream inputStream = new ClassPathResource("data/games.h5").getInputStream();
+            tempH5File = File.createTempFile("games", ".h5");
+            FileUtils.copyInputStreamToFile(inputStream, tempH5File);
+            IOUtils.closeQuietly(inputStream);
+            model = KerasModelImport.importKerasSequentialModelAndWeights(tempH5File.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UnsupportedKerasConfigurationException e) {
+            e.printStackTrace();
+        } catch (InvalidKerasConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
 
     @GetMapping("/imageDepth")
     public String imageDetph(){
@@ -94,25 +116,13 @@ public class ImageDepthController {
     @SneakyThrows
     @GetMapping("/imageDepth3")
     public String imageDepth(){
-        // load the model
-//        String simpleMlp = new ClassPathResource("games.h5").getFile().getPath();
-        String simpleMlp = "D:/Capstone/model/games.h5";
-        System.out.println(simpleMlp);
-
-        MultiLayerNetwork model = KerasModelImport.importKerasSequentialModelAndWeights(simpleMlp);
-        System.out.println(model.summary());
-
         // make a random sample
         int inputs = 10;
 
         int arr[][] = {{1, 0, 1, 0, 0, 1, 1, 1, 1, 0}};
         INDArray features = Nd4j.createFromArray(arr);
-//        INDArray features = Nd4j.zeros(inputs, 2);
-//        for (int i=0; i<inputs; i++)
-//            features.putScalar(new int[] {i}, Math.random() < 0.5 ? 0 : 1);
-        System.out.println(features.toString());
-        // get the prediction
 
+        // get the prediction
         double prediction = model.output(features).getDouble(0,0);
         System.out.println("Prediction : " + Double.toString(prediction));
 
