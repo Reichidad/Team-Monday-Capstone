@@ -127,7 +127,8 @@ public class SandboxView extends ImageView implements View.OnTouchListener {
                     //do nothing
                 }
                 camera.save();
-                camera.translate(0, 0, depth_now/2);
+                double curveOffset = 1.5;
+                camera.translate(0, 0, (int)(depth_now/curveOffset));
                 camera.getMatrix(transform);
                 camera.restore();
                 float[] point = null;
@@ -149,7 +150,7 @@ public class SandboxView extends ImageView implements View.OnTouchListener {
             }
         }
         Bitmap bitmapCopy = bitmap.copy(bitmap.getConfig(), true);
-        return eraseOuterBitmap(depthImage, bitmapCopy, depth_x, depth_y);
+        return eraseOuterBitmap(depthImage, bitmapCopy);
     }
 
     public void initMesh() {
@@ -200,7 +201,12 @@ public class SandboxView extends ImageView implements View.OnTouchListener {
     private static float getDegreesFromRadians(float angle) {
         return (float)(angle * 180.0 / Math.PI);
     }
-    private Bitmap eraseOuterBitmap(Bitmap depthImage, Bitmap input, int x, int y) {
+    private Bitmap eraseOuterBitmap(Bitmap depthImage, Bitmap input) {
+        int return_x = input.getWidth();
+        int return_y = input.getHeight();
+        input = Bitmap.createScaledBitmap(input, (int)(return_x * scale), (int)(return_y * scale), true);
+        int x = (int) position.getX() - (input.getWidth()/2);
+        int y = (int) position.getY() - (input.getHeight()/2);
         for (int i = 0; i < this.bg_width; i++) {
             for (int j = 0; j < this.bg_height; j++) {
                 float depth_now = 0;
@@ -221,7 +227,7 @@ public class SandboxView extends ImageView implements View.OnTouchListener {
                 }
             }
         }
-        return input;
+        return Bitmap.createScaledBitmap(input, return_x, return_y, true);
     }
 
     @Override
@@ -283,7 +289,7 @@ public class SandboxView extends ImageView implements View.OnTouchListener {
                         scale *= currentDistance / previousDistance;
                     }
 
-                    angle -= Vector2D.getSignedAngleBetween(current, previous);
+                    //angle -= Vector2D.getSignedAngleBetween(current, previous);
                 }
             }
 
