@@ -105,7 +105,7 @@
 />
 
     <Button
-            android:text="앙기모띠"
+            android:text="내 팔에 합성"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/button"
