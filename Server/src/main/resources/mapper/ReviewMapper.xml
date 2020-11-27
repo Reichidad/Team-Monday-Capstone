@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.ReviewMapper">
+    <resultMap id="reviewResultMap" type="com.example.demo.dto.ReviewDto">
+        <id property="reviewId" column="id" />
+        <result property="userId" column="user_id" />
+        <result property="postId" column="post_id" />
+        <result property="nickName" column="nick_name" />
+        <result property="cleanScore" column="clean_score" />
+        <result property="tattooUrl1" column="tattoo_url1" />
+        <result property="tattooUrl2" column="tattoo_url2" />
+        <result property="cleanUrl" column="clean_url" />
+    </resultMap>
+
+    <select id="selectAllReviewOfOnePost" parameterType="int" resultMap="reviewResultMap" resultType="com.example.demo.dto.ReviewDto">
+        SELECT * FROM review WHERE post_id = #{postId}
+    </select>
+
+    <select id="selectAllUserReviews" parameterType="string" resultMap="reviewResultMap" resultType="com.example.demo.dto.ReviewDto">
+        SELECT * FROM review WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insertReview" parameterType="com.example.demo.dto.ReviewDto">
+        INSERT INTO
+            review (user_id, post_id, nick_name, date, description, clean_score, tattoo_url1, tattoo_url2, clean_url)
+            VALUES
+            (#{userId}, #{postId}, #{nickName}, #{date}, #{description}, #{cleanScore}, #{tattooUrl1}, #{tattooUrl2}, #{cleanUrl})
+    </insert>
+
+    <delete id="deleteReview" parameterType="int">
+        DELETE FROM review WHERE id = #{reviewId}
+    </delete>
+
+    <select id="getReviewCount" parameterType="int" resultMap="reviewResultMap" resultType="int">
+        SELECT * FROM review WHERE post_id = #{postId}
+    </select>
+
+</mapper>

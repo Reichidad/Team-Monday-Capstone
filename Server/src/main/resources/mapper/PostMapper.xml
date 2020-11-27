@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.PostMapper">
+
+<!--    <select id="selectOnePost" parameterType="int" resultType="com.example.demo.dto.PostDto">-->
+<!--        SELECT * FROM post WHERE id = #{postId}-->
+<!--    </select>-->
+
+<!--    <select id="selectOnePostAllImages" parameterType="int" resultType="com.example.demo.dto.PostDto">-->
+<!--        SELECT a.id, a.tattooist_id, a.description, a.like_num, a.genre, a.shape, a.have_design, b.url, b.is_design FROM post a RIGHT OUTER JOIN tattoo_image b ON a.id = b.post_id WHERE a.id = #{postId};-->
+<!--    </select>-->
+    <resultMap id="postResultMap" type="com.example.demo.dto.PostDto">
+        <id property="postId" column="id" />
+        <result property="tattooistId" column="tattooist_id" />
+        <result property="likeNum" column="like_num" />
+        <result property="designUrl" column="design_url" />
+        <result property="bigShape" column="big_shape"/>
+        <result property="smallShape" column="small_shape"/>
+        <result property="avgCleanScore" column="avg_clean_score"/>
+    </resultMap>
+
+    <select id="selectAllPost" resultMap="postResultMap" resultType="com.example.demo.dto.PostDto">
+        SELECT a.id, a.tattooist_id, a.title, a.description, a.price, a.like_num, a.genre, a.big_shape, a.small_shape, a.design_url, a.avg_clean_score, b.url
+        FROM post AS a LEFT OUTER JOIN tattoo_image AS b ON a.id = b.post_id
+    </select>
+
+    <select id="selectSomePost" resultMap="postResultMap" resultType="com.example.demo.dto.PostDto">
+        SELECT a.id, a.tattooist_id, a.title, a.description, a.price, a.like_num, a.genre, a.big_shape, a.small_shape, a.design_url, a.avg_clean_score, b.url
+        FROM post AS a LEFT OUTER JOIN tattoo_image AS b ON a.id = b.post_id
+        WHERE a.id IN
+        <foreach collection="postIdList" item="list" open="(" close=")" separator=",">
+            #{list}
+        </foreach>
+    </select>
+
+
+    <select id="selectPostByTattooistId" parameterType="string" resultMap="postResultMap" resultType="com.example.demo.dto.PostDto">
+        SELECT a.id, a.tattooist_id, a.title, a.description, a.price, a.like_num, a.genre, a.big_shape, a.small_shape, a.design_url, a.avg_clean_score, b.url
+        FROM post AS a LEFT OUTER JOIN tattoo_image AS b ON a.id = b.post_id
+        WHERE tattooist_id = #{tattooistId}
+    </select>
+
+    <insert id="insertPost" parameterType="com.example.demo.dto.PostDto">
+        INSERT INTO
+            post (tattooist_id, title, description, price, like_num, genre, big_shape, small_shape, design_url, avg_clean_score)
+            VALUES
+            (#{tattooistId}, #{title}, #{description}, #{price}, 0, #{genre}, #{bigShape}, #{smallShape}, #{designUrl}, 0)
+    </insert>
+
+    <delete id="deletePost" parameterType="int">
+        DELETE FROM post WHERE id = #{postId}
+    </delete>
+
+    <select id="selectPreCleanScore" parameterType="int" resultMap="postResultMap" resultType="com.example.demo.dto.PostDto">
+        SELECT avg_clean_score FROM post WHERE id = #{postId}
+    </select>
+
+    <update id="updateCleanScore" parameterType="map">
+        UPDATE post SET avg_clean_score = #{avgCleanScore}
+        WHERE id = #{postId}
+    </update>
+
+    <select id="searchPostId" resultMap="postResultMap" resultType="com.example.demo.dto.PostDto">
+        SELECT id FROM post WHERE tattooist_id = #{tattooistId} AND description = #{description}
+    </select>
+</mapper>

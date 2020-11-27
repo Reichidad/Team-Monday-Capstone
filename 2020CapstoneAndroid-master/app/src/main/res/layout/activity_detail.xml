@@ -1,0 +1,72 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                     xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                     android:layout_width="match_parent"
+                                                     android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                        android:id="@+id/collapsing_toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        app:contentScrim="@color/white"
+                        app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                        <com.smarteist.autoimageslider.SliderView
+                                android:id="@+id/imageSlider"
+                                android:layout_width="match_parent"
+                                android:layout_height="200dp"
+                                app:sliderAnimationDuration="100"
+                                app:sliderAutoCycleDirection="back_and_forth"
+                                app:sliderAutoCycleEnabled="true"
+                                app:sliderIndicatorAnimationDuration="100"
+                                app:sliderIndicatorGravity="center_horizontal|bottom"
+                                app:sliderIndicatorMargin="15dp"
+                                app:sliderIndicatorOrientation="horizontal"
+                                app:sliderIndicatorPadding="3dp"
+                                app:sliderIndicatorRadius="2dp"
+                                app:sliderIndicatorSelectedColor="#5A5A5A"
+                                app:sliderIndicatorUnselectedColor="#FFF"
+                                app:sliderScrollTimeInSec="1"
+                                app:sliderStartAutoCycle="true"
+                                app:layout_collapseMode="parallax"
+                                app:layout_collapseParallaxMultiplier="0.7"/>
+                        <!--                        <ImageView-->
+                        <!--                                android:id="@+id/expandedImage"-->
+                        <!--                                android:layout_width="match_parent"-->
+                        <!--                                android:layout_height="200dp"-->
+                        <!--                                android:scaleType="centerCrop"-->
+                        <!--                                android:src="@drawable/ic_camera_alt_white_24dp"-->
+                        <!--                                app:layout_collapseMode="parallax"-->
+                        <!--                                app:layout_collapseParallaxMultiplier="0.7" />-->
+
+                        <androidx.appcompat.widget.Toolbar
+                                android:id="@+id/toolbar"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:background="#00ff0000"
+                                android:title=""
+                                app:layout_collapseMode="pin"
+                        />
+
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <include
+                        layout="@layout/activity_app_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+        </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

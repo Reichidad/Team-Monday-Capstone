@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">newTattooAndroid</string>
+    <string name="title_home">검색</string>
+    <string name="title_dashboard">좋아요</string>
+    <string name="title_seemore">더보기</string>
+
+    <string name="title_activity_main">MainActivity</string>
+    <string name="facebook_app_id">278691869800738</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="user_exists">User already logged in</string>
+    <string name="sign_in_facebook">페이스북 계정으로 로그인</string>
+    <string name="sign_in_google">구글 계정으로 로그인</string>
+    <string name="sign_in">로그인</string>
+    <string name="sign_up_button">회원 가입</string>
+    <string name="logout_text">Sign out</string>
+</resources>

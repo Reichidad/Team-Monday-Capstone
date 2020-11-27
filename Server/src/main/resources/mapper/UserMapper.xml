@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.UserMapper">
+    <resultMap id="userResultMap" type="com.example.demo.dto.UserDto">
+        <id property="userId" column="id" />
+        <result property="userPw" column="pw" />
+        <result property="nickName" column="nick_name" />
+        <result property="likeNum" column="like_num" />
+        <result property="haveDesign" column="have_design" />
+    </resultMap>
+
+<!--    <update id="updateUser" parameterType="userDto">-->
+<!--        UPDATE user-->
+<!--        SET userPw = #{userPw}, userName = #{userName}, userGender = #{userGender}, userEmail = #{userEmail}-->
+<!--        WHERE userId = #{userId}-->
+<!--    </update>-->
+
+    <insert id="insertUser" parameterType="com.example.demo.dto.UserDto">
+        INSERT INTO user VALUES (#{userId}, #{userPw}, #{name}, #{nickName}, #{sex}, #{age}, #{country}, #{address})
+    </insert>
+
+    <select id="selectOneUser" parameterType="string" resultMap="userResultMap" resultType="com.example.demo.dto.UserDto">
+        SELECT * FROM user WHERE id = #{userId}
+    </select>
+
+    <delete id="deleteUser" parameterType="string">
+        DELETE FROM user WHERE id = #{userId}
+    </delete>
+<!--    <select id="selectAllUser" resultType="userDto">-->
+<!--        SELECT * FROM user-->
+<!--    </select>-->
+</mapper>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="#333333"
+    >
+
+    <FrameLayout android:layout_width="match_parent"
+                 android:layout_height="0dp"
+                 android:id="@+id/fl_capture"
+                 app:layout_constraintBottom_toTopOf="@id/seekbar_angle"
+                 app:layout_constraintTop_toTopOf="parent"
+                 app:layout_constraintRight_toRightOf="parent"
+                 app:layout_constraintLeft_toLeftOf="parent"
+                 app:layout_constraintVertical_weight="9"
+        >
+
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:src="@drawable/hand"
+                android:scaleType="fitCenter"
+                android:id="@+id/iv_bg"
+        ></ImageView>
+
+        <com.example.newtattooandroid.gesture.SandboxView
+            android:id="@+id/view_sandbox"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:src="@drawable/transparent"/>
+
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_load"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:orientation="vertical"
+        >
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_bg"
+            android:id="@+id/iv_load"
+            android:layout_gravity="center_horizontal"
+            />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="배경선택"
+        ></TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_save"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        android:orientation="vertical"
+        >
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_save"
+            android:id="@+id/iv_save"
+            android:layout_gravity="center_horizontal"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="저장하기"
+            ></TextView>
+
+    </LinearLayout>
+
+    <SeekBar android:layout_width="match_parent"
+             android:layout_height="50dp"
+             android:id="@+id/seekbar_angle"
+             app:layout_constraintVertical_weight="1"
+             android:max="180"
+             android:min="-180"
+             android:progress="1"
+             android:layout_alignParentBottom="true"
+             app:layout_constraintTop_toBottomOf="@id/fl_capture"
+             app:layout_constraintRight_toRightOf="parent"
+             app:layout_constraintLeft_toLeftOf="parent"
+             app:layout_constraintBottom_toBottomOf="@id/button"
+/>
+
+    <Button
+            android:text="내 팔에 합성"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button"
+            app:layout_constraintTop_toBottomOf="@id/seekbar_angle"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
