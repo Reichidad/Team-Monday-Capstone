@@ -21,6 +21,10 @@ public interface NetworkAPIs {
     @POST("/test")
     Call<List<MainItem>> searchImage(@Part MultipartBody.Part file);
 
+    @Multipart
+    @POST("/test")
+    Call<ResponseBody> getImageDepth(@Part MultipartBody.Part file);
+
     @GET("/allpost")
     Call<List<MainItem>> getAllPost();
 

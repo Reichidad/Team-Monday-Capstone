@@ -13,6 +13,7 @@ import com.example.newtattooandroid.model.Vector2D;
 public class SandboxView extends ImageView implements View.OnTouchListener {
 
     private Bitmap bitmap;
+    private Bitmap depth = null;
     private int width;
     private int height;
     //배경 이미지 크기 저장
@@ -75,6 +76,13 @@ public class SandboxView extends ImageView implements View.OnTouchListener {
         invalidate();
     }
 
+    public void setDepthImageBitmap(Bitmap bm) {
+        this.depth = bm;
+    }
+    public Bitmap getBitmap() {
+        return this.bitmap;
+    }
+
     public void setAngle(float angle) {
         this.mAngle = angle;
         invalidate();
@@ -83,17 +91,15 @@ public class SandboxView extends ImageView implements View.OnTouchListener {
     public void setBackgroundValues(int width, int height) {
         this.bg_width = width;
         this.bg_height = height;
-        System.out.println(this.bg_width + ", " + this.bg_height);
         this.buttonClicked = true;
         invalidate();
     }
 
     public Bitmap depthProcess() {
         //depth 이미지 불러오는 코드 -> 나중에 model serving result로 대체해야함
-        Bitmap depthImage = BitmapFactory.decodeResource(getResources(), R.drawable.depth);
+        Bitmap depthImage = this.depth;
         //잘 로딩되었으면 팔 이미지와 같은 크기로 리사이징
         if(depthImage != null) {
-            System.out.println("Depth Image Load Success");
             if(this.bg_height > 0 && this.bg_width > 0) {
                 depthImage = Bitmap.createScaledBitmap(depthImage, this.bg_width, this.bg_height, true);
             }

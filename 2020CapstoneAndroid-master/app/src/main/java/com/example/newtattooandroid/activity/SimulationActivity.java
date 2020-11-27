@@ -3,6 +3,7 @@ package com.example.newtattooandroid.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -19,6 +20,15 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.newtattooandroid.R;
 import com.example.newtattooandroid.gesture.SandboxView;
+import com.example.newtattooandroid.network.NetworkAPIs;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import java.io.*;
 
@@ -110,7 +120,13 @@ public class SimulationActivity extends AppCompatActivity {
         button.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sandboxView.setBackgroundValues(bgimageView.getWidth(), bgimageView.getHeight());
+                try {
+                    BitmapDrawable drawable = (BitmapDrawable) bgimageView.getDrawable();
+                    Bitmap bgBitmap = drawable.getBitmap();
+                    getImageDepth(bgBitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -162,5 +178,41 @@ public class SimulationActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    //이미지뎁스 구하기
+    private void getImageDepth(Bitmap tattooImage) throws IOException {
+//        Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, 256, 256, true);
+        File file = new File(getApplicationContext().getCacheDir(), "temp");
+        file.createNewFile();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        tattooImage.compress(Bitmap.CompressFormat.PNG, 0, bos);
+        byte[] bitmapData = bos.toByteArray();
+
+        FileOutputStream fos = null;
+        fos = new FileOutputStream(file);
+        fos.write(bitmapData);
+        fos.flush();
+        fos.close();
+
+        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("image", file.getName(), fileReqBody);
+
+        NetworkAPIs api = new Retrofit.Builder().baseUrl("http://motion2ai.iptime.org:5000/").build().create(NetworkAPIs.class);
+        Call<ResponseBody> call = api.getImageDepth(part);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                InputStream is = response.body().byteStream();
+                Bitmap bm = BitmapFactory.decodeStream(is);
+                sandboxView.setDepthImageBitmap(bm);
+                sandboxView.setBackgroundValues(bgimageView.getWidth(), bgimageView.getHeight());
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 }
