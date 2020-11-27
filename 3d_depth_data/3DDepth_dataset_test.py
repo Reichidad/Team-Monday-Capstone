@@ -8,9 +8,11 @@ from PIL import Image
 import copy
 
 # MemoryError 해결하기 위해서 전체가 아닌 일부 카메라 데이터를 나눠서 가공함
-START = 3
+START = 4
 END = 4
-COMMON_DIR = 'woman01/02_04_jump'
+# 공통 디렉토리
+# 이 부분을 수정하면서 데이터셋을 가공
+COMMON_DIR = 'woman02/38_03_run_circle'
 
 
 # read_something
@@ -85,7 +87,28 @@ def img_mask(img, lower, upper):
 # 해당 구간에 대해서 크롭을 위한 4개의 끝점을 구함
 # 가공한 depth data : 가공한 segmentation data 위치의 depth data만을 남긴 것
 # 각각의 가공한 data를 4개의 끝점으로 크롭하여 저장
-def save_imgs(seg_img, depth_img, cloth_img, seg_dir, depth_dir, ignore):
+def save_imgs(seg_img, depth_img, cloth_img, seg_dir, depth_dir, boundary, ignore):
+    # 자르는 곳 판정을 위한 1차 팔 부분 검색
+    r_mask_0 = cv2.inRange(seg_img, boundary[0], boundary[0])
+    r_res_0 = cv2.bitwise_and(seg_img, seg_img, mask=r_mask_0)
+    r_mask_1 = cv2.inRange(seg_img, boundary[1], boundary[1])
+    r_res_1 = cv2.bitwise_and(seg_img, seg_img, mask=r_mask_1)
+    r_mask_2 = cv2.inRange(seg_img, boundary[2], boundary[2])
+    r_res_2 = cv2.bitwise_and(seg_img, seg_img, mask=r_mask_2)
+
+    r_img = r_res_0 + r_res_1 + r_res_2
+    r_img = np.where(r_img > 255, 255, r_img)
+    r_gray = cv2.cvtColor(r_img, cv2.COLOR_BGR2GRAY)
+    r_gray = np.where(r_gray == 0, 0, 100)
+    # 팔 부분 없으면 종료
+    if 100 not in np.unique(r_gray):
+        return
+    # 자르기 위한 4개의 끝점 저장
+    r_t = get_top(r_gray)
+    r_b = get_bottom(r_gray)
+    r_l = get_left(r_gray)
+    r_r = get_right(r_gray)
+
     # 팔 부분만 남기고 나머지 라벨 제거
     seg_img_copy = copy.deepcopy(seg_img)
     # ignore : 반대쪽 팔 라벨
@@ -107,20 +130,12 @@ def save_imgs(seg_img, depth_img, cloth_img, seg_dir, depth_dir, ignore):
     tmp = np.where(cloth_res == 0, 0, tmp)
     tmp = np.where(tmp <= 0, 0, 100)
 
-    # 피부 부분이 존재할 경우 4개의 끝점을 찾아서 자르고 저장
-    if 100 in np.unique(tmp):
-        r_t = get_top(tmp)
-        r_b = get_bottom(tmp)
-        r_l = get_left(tmp)
-        r_r = get_right(tmp)
+    # 4개의 끝점을 찾아서 자르고 저장
+    cv2.imwrite(seg_dir, tmp[r_t:r_b, r_l:r_r])
+    depth_tmp = np.where(tmp == 0, 0, depth_img)
+    cv2.imwrite(depth_dir, depth_tmp[r_t:r_b, r_l:r_r])
 
-        cv2.imwrite(seg_dir, tmp[r_t:r_b, r_l:r_r])
-        depth_tmp = np.where(tmp == 0, 0, depth_img)
-        cv2.imwrite(depth_dir, depth_tmp[r_t:r_b, r_l:r_r])
-
-        return [r_t, r_b, r_l, r_r]
-    else:
-        return
+    return [r_t, r_b, r_l, r_r]
 
 
 # 원본 경로
@@ -152,9 +167,9 @@ for i in range(len(segmentation)):
                          + str(i + START) + '/frame' + str(j + 1) + '_left.png'
         # save_imgs() 호출 및 4개의 끝점들을 저장
         crop_array[i][j][0] = save_imgs(segmentation[i][j], depths[i][j], clothes[i][j], seg_right_dir,
-                                        depth_right_dir, left_arms)
+                                        depth_right_dir, right_arms, left_arms)
         crop_array[i][j][1] = save_imgs(segmentation[i][j], depths[i][j], clothes[i][j], seg_left_dir,
-                                        depth_left_dir, right_arms)
+                                        depth_left_dir, left_arms, right_arms)
 # MemoryError를 해결하기 위해 다 사용한 원본 데이터를 del
 del clothes
 del depths
