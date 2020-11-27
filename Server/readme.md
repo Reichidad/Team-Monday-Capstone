@@ -2,8 +2,35 @@
 
 - Spring API server for Tattoo app
 
-### Nginx Setting (for Load Balancing)
-1.nginx.conf setting
+### 1. EC2 Setting
+1.Install JDK 11 in EC2
+```shell script
+# aws coreetto 다운로드
+sudo curl -L https://corretto.aws/downloads/latest/amazon-corretto-11-x64-linux-jdk.rpm -o jdk11.rpm
+
+# jdk11 설치
+sudo yum localinstall jdk11.rpm
+
+# jdk version 선택
+sudo /usr/sbin/alternatives --config java
+
+# java 버전 확인
+java --version
+
+# 다운받은 설치키트 제거
+rm -rf jdk11.rpm
+```
+
+2.EC2 In-Bound Setting(Open XXXX(ex. 8080) port)
+
+### 2. Nginx Setting (for Load Balancing)
+1.Install Nginx
+```shell script
+sudo yum install nginx
+## or
+sudo amazon-linux-extras install nginx1
+```
+2.nginx.conf setting
 ```shell script
 http{
   ##
@@ -18,13 +45,13 @@ http{
 }
 ```
 
-2.Create a new nginx.conf file in 'sites-available directory'.
+3.Create a new nginx.conf file in 'sites-available directory'.
 ```shell script
 # file Name : lb.conf
 upstream myserver{
   # <loadbalance type : default = round-robin>
-  server 192.168.0.1:4000;
-  server 192.168.0.1:5000;
+  server 127.0.0.1:8081;
+  server 127.0.0.1:8082;
 }
 
 server {
@@ -36,8 +63,41 @@ server {
 }
 ```
 
-3.Link .conf file.
+4.Link .conf file.
 ```
 sudo ln -s /etc/nginx/sites-available/lb.conf /etc/nginx/sites-enabled/
 ```
 
+### 3. MySQL Setting
+1.Install Mysql-Server
+```shell script
+#mysql-server 설치
+sudo yum install mysql-server
+
+# 초기 비밀번호 확인
+sudo grep 'temporary password' /var/log/mysqld.log
+
+# mysql 로그인
+sudo mysql -u root -p
+
+# 비밀 번호 변경 (Mysql 8.x)
+alter user 'root'@'localhost' identified with mysql_native_password by 'NewPassword1!';
+
+#변경사항 적용
+flush privileges;
+```
+
+2.Allow remote access
+```shell script
+cd /etc/mysql/mysql.conf.d
+
+# bind-address edit (Mysql 5.x만 Mysql 8.x 필요 없음)
+sudo vim mysqld.cnf
+
+# bind-address 수정
+bind-address = 0.0.0.0 
+```
+
+3.Create DB & Table
+
+4.load .csv files with Mysql loader

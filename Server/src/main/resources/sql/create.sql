@@ -15,8 +15,7 @@ CREATE TABLE `tattooist` (
   `mobile` varchar(30) NOT NULL,
   `description` varchar(50) NOT NULL,
   PRIMARY KEY (id),
-  foreign key (id) references user(id) on delete restrict,
-  foreign key (nick_name) references user(nick_name) on delete restrict
+  foreign key (id) references user(id) on delete restrict
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `post` (
@@ -46,7 +45,6 @@ CREATE TABLE `review` (
   `tattoo_url2` varchar(80) not null,
   foreign key (user_id) references user(id) on delete restrict,
   foreign key (post_id) references post(id) on delete restrict,
-  foreign key (nick_name) references user(nick_name) on delete restrict,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
