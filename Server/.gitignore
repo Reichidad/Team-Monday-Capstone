@@ -36,3 +36,4 @@ application.properties
 **/src/main/resources/sql/DataCreater.java
 !/src/main/resources/sql/DataCreater.java
 /src/main/crawling/flask.py
+

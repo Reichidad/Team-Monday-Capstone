@@ -2,6 +2,7 @@
 
 - Spring API server for Tattoo app
 
+
 ### 1. EC2 Setting
 1.Install JDK 11 in EC2
 ```shell script
@@ -101,3 +102,4 @@ bind-address = 0.0.0.0
 3.Create DB & Table
 
 4.load .csv files with Mysql loader
+
