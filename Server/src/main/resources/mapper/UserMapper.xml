@@ -17,7 +17,7 @@
 <!--    </update>-->
 
     <insert id="insertUser" parameterType="com.example.demo.dto.UserDto">
-        INSERT INTO user VALUES (#{userId}, #{userPw}, #{name}, #{nickName}, #{sex}, #{age}, #{country}, #{address})
+        INSERT INTO user VALUES (#{userId}, #{userPw}, #{name}, #{nickName})
     </insert>
 
     <select id="selectOneUser" parameterType="string" resultMap="userResultMap" resultType="com.example.demo.dto.UserDto">
