@@ -133,7 +133,7 @@ public class SandboxView extends ImageView implements View.OnTouchListener {
                     //do nothing
                 }
                 camera.save();
-                double curveOffset = 1.5;
+                double curveOffset = 0.6;
                 camera.translate(0, 0, (int)(depth_now/curveOffset));
                 camera.getMatrix(transform);
                 camera.restore();
