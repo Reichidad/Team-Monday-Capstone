@@ -103,3 +103,16 @@ bind-address = 0.0.0.0
 
 4.load .csv files with Mysql loader
 
+### 4.서버 자동 실행 (jar)
+```shell script
+while [ 1 ] 
+	do 
+		pid=`ps -ef | grep "myserver" | grep -v 'grep' | awk '{print $2}'` 
+		if [ -z $pid ];then 
+			if [ $count -lt 10 ];then 
+				echo "server auto restart" 
+				sudo nohub java -jar /home/ec2-user/myserver.jar &  
+		fi 
+		sleep 2 
+	done
+```
