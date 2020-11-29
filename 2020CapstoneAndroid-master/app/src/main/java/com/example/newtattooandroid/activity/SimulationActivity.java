@@ -3,7 +3,9 @@ package com.example.newtattooandroid.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -16,6 +18,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapThumbnailImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.newtattooandroid.R;
@@ -35,7 +38,6 @@ import java.io.*;
 
 public class SimulationActivity extends AppCompatActivity {
 
-    private SeekBar seekBar;
     private SandboxView sandboxView;
     private LinearLayout loadLayout;
     private ImageView bgimageView;
@@ -52,7 +54,6 @@ public class SimulationActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
-        seekBar = (SeekBar) findViewById(R.id.seekbar_angle);
         sandboxView = (SandboxView) findViewById(R.id.view_sandbox);
         loadLayout = (LinearLayout) findViewById(R.id.ll_load);
         bgimageView = findViewById(R.id.iv_bg);
@@ -73,6 +74,7 @@ public class SimulationActivity extends AppCompatActivity {
                 }
             });
         }
+
 
         //저장하기 Layout, 불러오기 Layout 클릭 이벤트 처리
         loadLayout.setOnClickListener(new View.OnClickListener() {
@@ -130,25 +132,6 @@ public class SimulationActivity extends AppCompatActivity {
             }
         });
 
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-                sandboxView.setAngle(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                int progress = seekBar.getProgress();
-                sandboxView.setAngle(progress);
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                int progress = seekBar.getProgress();
-                sandboxView.setAngle(progress);
-            }
-        });
     }
 
     @Override
@@ -160,10 +143,16 @@ public class SimulationActivity extends AppCompatActivity {
                     InputStream in = getContentResolver().openInputStream(data.getData());
 
                     Bitmap img = BitmapFactory.decodeStream(in);
+                    //회전정보 가져오기
+                    ExifInterface exif = null;
+                    exif = new ExifInterface(in);
+                    int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+                    Bitmap bmRotated = roteateBitmap(img, orientation);
+
                     in.close();
 
                     Glide.with(getApplicationContext())
-                            .load(img)
+                            .load(bmRotated)
                             .fitCenter()
                             .into(bgimageView);
 //                    bgimageView.setImageBitmap(img);
@@ -177,6 +166,48 @@ public class SimulationActivity extends AppCompatActivity {
                 Toast.makeText(this, "사진 선택 취소", Toast.LENGTH_LONG).show();
             }
 
+        }
+    }
+
+    //갤러리 이미지 회전 현상 해결 목적 (비트맵 회전)
+     private Bitmap roteateBitmap(Bitmap bitmap, int orientation){
+        Matrix matrix = new Matrix();
+        switch (orientation){
+            case ExifInterface.ORIENTATION_NORMAL:
+                return bitmap;
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                matrix.setScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180);
+                break;
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                matrix.setRotate(180);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+                matrix.setRotate(90);
+                matrix.postScale(-1, 1);
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+                matrix.setRotate(-90);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(-90);
+                break;
+            default:
+                return bitmap;
+        }
+        try{
+            Bitmap bmRotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            bitmap.recycle();;
+            return bmRotated;
+        }catch(OutOfMemoryError e){
+            e.printStackTrace();
+            return null;
         }
     }
 

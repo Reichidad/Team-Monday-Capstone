@@ -89,12 +89,14 @@ public class HomeFragment extends Fragment implements MaterialSearchBar.OnSearch
         mLayout = getActivity().findViewById(R.id.activity_main);
         camera_btn = root.findViewById(R.id.camera_button);
         camera_btn.setOnClickListener(new View.OnClickListener() {
+            //이미지 서치 기능 막음
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setType("image/*");
-                startActivityForResult(intent, GET_GALLERY_IMAGE);
+//                Intent intent = new Intent(Intent.ACTION_PICK);
+//                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                intent.setType("image/*");
+//                startActivityForResult(intent, GET_GALLERY_IMAGE);
+                return;
             }
         });
 
